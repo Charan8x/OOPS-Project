@@ -10,7 +10,7 @@ app = Flask(__name__)
 CORS(app)
 
 
-def fetch_stock_json(symbol, period_days):
+def fetch_stock_json(symbol):
     data = yf.download(symbol, period="1y", interval="1d", progress=False)
     try:
         if hasattr(data.columns, "levels") and len(data.columns.levels) > 1:
@@ -23,24 +23,17 @@ def fetch_stock_json(symbol, period_days):
     close_prices = close_series.dropna().tolist()
     if not close_prices:
         raise Exception(f"No close prices found for symbol: {symbol}")
-    return {"close_prices": close_prices, "period": period_days}
+    return {"close_prices": close_prices}
 
 
 @app.route("/predict", methods=["POST"])
 def predict():
     data = request.json
     symbol = data.get("symbol", "").upper()
-    period = data.get("period", 5)  # Default to 5-day SMA
-
     if not symbol:
         return jsonify({"error": "No symbol provided"}), 400
-
-    # Validate period
-    if period not in [5, 10, 20, 30]:
-        period = 5
-
     try:
-        stock_json = fetch_stock_json(symbol, period)
+        stock_json = fetch_stock_json(symbol)
         cpp_exe = os.path.abspath(
             os.path.join(os.path.dirname(__file__), "../cpp_core/main")
         )
@@ -84,7 +77,7 @@ def stock_info():
     if not symbol:
         return jsonify({"error": "No symbol provided"}), 400
     try:
-        stock_data = yf.download(symbol, period="1y", interval="1d", progress=False)
+        stock_data = yf.download(symbol, period="6mo", interval="1d", progress=False)
         if stock_data.empty:
             return jsonify({"error": "No data found for symbol."}), 404
         if hasattr(stock_data.columns, "levels") and len(stock_data.columns.levels) > 1:
@@ -95,21 +88,12 @@ def stock_info():
         closes = close_series.dropna().tolist()
         dates = [str(date)[:10] for date in close_series.dropna().index]
         last_price = closes[-1] if closes else None
-
-        logo_url = None
-        try:
-            ticker = yf.Ticker(symbol)
-            logo_url = ticker.info.get("logo_url")
-        except Exception:
-            logo_url = None
-
         return jsonify(
             {
                 "symbol": symbol,
                 "closes": closes,
                 "dates": dates,
                 "last_price": last_price,
-                "logo_url": logo_url,
             }
         )
     except Exception as e:
