@@ -38,7 +38,11 @@ How It Works:
 Technology Stack:
 
 Backend: Flask, Python
+
 Core Engine: C++ with nlohmann/json
+
 Frontend: HTML, CSS, JavaScript
+
 Charts: Chart.js
+
 Data Source: Yahoo Finance API
