@@ -36,6 +36,7 @@ How It Works:
 4) View predictions with confidence metrics and price charts
 
 Technology Stack:
+
 Backend: Flask, Python
 Core Engine: C++ with nlohmann/json
 Frontend: HTML, CSS, JavaScript
