@@ -1,4 +1,5 @@
-📈 Stock Predictor
+📈 Stock Predictor:
+
 A web application that predicts stock prices using Simple Moving Average (SMA) analysis. Built with Flask, C++, and modern web technologies Features
 
 Real-time stock data from Yahoo Finance
@@ -15,7 +16,8 @@ Requirements:
 3) pip
 
 🏗️ Architecture
-
+## Architecture
+```
 Frontend (HTML/CSS/JS)
          ↓
     Flask Backend
@@ -24,6 +26,7 @@ Frontend (HTML/CSS/JS)
     ↓         ↓
 yfinance    C++ Core
   API       Engine
+```
 
 
 How It Works:
